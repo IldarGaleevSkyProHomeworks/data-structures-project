@@ -10,6 +10,18 @@ class Node:
         return self._data
 
 
+class NodeIterator:
+    def __init__(self, node: Node):
+        self._curr_node = node
+
+    def __next__(self):
+        if self._curr_node:
+            next_node = self._curr_node
+            self._curr_node = next_node.next_node
+            return next_node.data
+        raise StopIteration
+
+
 class LinkedList:
     """Класс для односвязного списка"""
 
@@ -53,6 +65,19 @@ class LinkedList:
         self._last_element.next_node = new_node
         self._last_element = new_node
 
+    def to_list(self):
+        return [node for node in self]
+
+    def get_data_by_id(self, find_id):
+        for node in self:
+            try:
+                if node["id"] == find_id:
+                    return node
+            except Exception as ex:
+                # raise TypeError("Данные не являются словарем или в словаре нет id")
+                print("Данные не являются словарем или в словаре нет id")
+        return None
+
     def __str__(self) -> str:
         """Вывод данных односвязного списка в строковом представлении"""
         node = self.head
@@ -66,3 +91,6 @@ class LinkedList:
 
         ll_string += 'None'
         return ll_string
+
+    def __iter__(self):
+        return NodeIterator(self._first_element)
